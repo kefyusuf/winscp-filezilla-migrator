@@ -6,15 +6,15 @@ See: `.planning/PROJECT.md` (updated 2026-05-07)
 
 **Core value:** Enable users to migrate WinSCP server configs to FileZilla with cross-platform GUI
 
-**Current focus:** Phase 2 - Core
+**Current focus:** Phase 3 - GUI
 
 ## Session State
 
-**Active phase:** Phase 2 (Core)
+**Active phase:** Phase 3 (GUI)
 
-**Completed phases:** Phase 1 (Setup)
+**Completed phases:** Phase 1 (Setup), Phase 2 (Core)
 
-**Next phase:** Phase 2 (Core)
+**Next phase:** Phase 3 (GUI)
 
 ## Workstream Status
 
@@ -27,7 +27,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-07)
 
 **v1.0 (first release)**
 - [x] Phase 1: Setup
-- [ ] Phase 2: Core
+- [x] Phase 2: Core
 - [ ] Phase 3: GUI
 - [ ] Phase 4: Advanced
 - [ ] Phase 5: Polish
