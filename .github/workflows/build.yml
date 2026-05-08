@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Linux dependencies for Gio GUI
         if: runner.os == 'Linux'
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq libxkbcommon-dev libwayland-dev libgl1-mesa-dev libegl1-mesa-dev libx11-dev libxcursor-dev libxrandr-dev
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libxkbcommon-dev libwayland-dev libgl1-mesa-dev libegl1-mesa-dev libx11-dev libxcursor-dev libxrandr-dev libvulkan-dev
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Linux dependencies for Gio GUI
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq libxkbcommon-dev libwayland-dev libgl1-mesa-dev libegl1-mesa-dev libx11-dev libxcursor-dev libxrandr-dev
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libxkbcommon-dev libwayland-dev libgl1-mesa-dev libegl1-mesa-dev libx11-dev libxcursor-dev libxrandr-dev libvulkan-dev
 
       - name: Set up Go
         uses: actions/setup-go@v5
