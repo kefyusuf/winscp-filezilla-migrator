@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FileZilla3>
+  <Servers>
+    <Folder>WinSCP-2026-01-01_0000
+      <Folder>Production Servers
+        <Server>
+          <Name>Web Server</Name>
+          <Host>web.example.com</Host>
+          <Protocol>1</Protocol>
+          <User>admin</User>
+          <Pass encoding="base64">QTNGRjEyMzQ1Njc4OTA=</Pass>
+          <Port>22</Port>
+          <LocalDir/>
+          <RemoteDir>/var/www/html</RemoteDir>
+          <Type>0</Type>
+          <Logontype>1</Logontype>
+          <TimezoneOffset>0</TimezoneOffset>
+          <PasvMode>MODE_DEFAULT</PasvMode>
+          <MaximumMultipleConnections>0</MaximumMultipleConnections>
+          <EncodingType>Auto</EncodingType>
+          <BypassProxy>0</BypassProxy>
+          <SyncBrowsing>0</SyncBrowsing>
+          <Comments/>
+        </Server>
+        <Server>
+          <Name>Database Server</Name>
+          <Host>db.example.com</Host>
+          <Protocol>1</Protocol>
+          <User>dbadmin</User>
+          <Pass encoding="base64">QTNGRmFiY2RlZjEyMzQ=</Pass>
+          <Port>22</Port>
+          <LocalDir/>
+          <RemoteDir/>
+          <Type>0</Type>
+          <Logontype>1</Logontype>
+          <TimezoneOffset>0</TimezoneOffset>
+          <PasvMode>MODE_DEFAULT</PasvMode>
+          <MaximumMultipleConnections>0</MaximumMultipleConnections>
+          <EncodingType>Auto</EncodingType>
+          <BypassProxy>0</BypassProxy>
+          <SyncBrowsing>0</SyncBrowsing>
+          <Comments/>
+        </Server>
+      </Folder>
+      <Folder>Development
+        <Server>
+          <Name>Test Server</Name>
+          <Host>dev.example.com</Host>
+          <Protocol>0</Protocol>
+          <User>testuser</User>
+          <Pass encoding="base64">QTNGRjk4NzY1NDMyMTA=</Pass>
+          <Port>21</Port>
+          <LocalDir/>
+          <RemoteDir/>
+          <Type>0</Type>
+          <Logontype>1</Logontype>
+          <TimezoneOffset>0</TimezoneOffset>
+          <PasvMode>MODE_DEFAULT</PasvMode>
+          <MaximumMultipleConnections>0</MaximumMultipleConnections>
+          <EncodingType>Auto</EncodingType>
+          <BypassProxy>0</BypassProxy>
+          <SyncBrowsing>0</SyncBrowsing>
+          <Comments/>
+        </Server>
+      </Folder>
+      <Folder>Production FTP
+        <Server>
+          <Name>Backup Server</Name>
+          <Host>backup.example.com</Host>
+          <Protocol>0</Protocol>
+          <User>backup</User>
+          <Pass encoding="base64">QTNGRjExMTEyMjIyMzM=</Pass>
+          <Port>21</Port>
+          <LocalDir/>
+          <RemoteDir/>
+          <Type>0</Type>
+          <Logontype>1</Logontype>
+          <TimezoneOffset>0</TimezoneOffset>
+          <PasvMode>MODE_DEFAULT</PasvMode>
+          <MaximumMultipleConnections>0</MaximumMultipleConnections>
+          <EncodingType>Auto</EncodingType>
+          <BypassProxy>0</BypassProxy>
+          <SyncBrowsing>0</SyncBrowsing>
+          <Comments/>
+        </Server>
+      </Folder>
+    </Folder>
+  </Servers>
+</FileZilla3>

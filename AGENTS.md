@@ -1,7 +1,7 @@
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
 
-**winscp2filezilla**
+**winscp-filezilla-migrator**
 
 A cross-platform desktop application that migrates saved FTP/SFTP server configurations from WinSCP to FileZilla. Users select their WinSCP.ini file, preview their server list, and export to FileZilla's sites.xml format. Built with Go + Fyne for native performance on Windows, Linux, and macOS.
 

@@ -1,0 +1,140 @@
+version: 2
+
+project_name: winscp-filezilla-migrator
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: gui
+    main: ./
+    binary: winscp-filezilla-migrator
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: arm64
+    overrides:
+      - goos: windows
+        ldflags:
+          - -s -w -H=windowsgui
+
+  - id: cli
+    main: ./cmd/cli/
+    binary: winscp-filezilla-migrator-cli
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: arm64
+
+  - id: web-server
+    main: ./web/
+    binary: winscp-filezilla-migrator-web
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: arm64
+
+archives:
+  - id: gui
+    builds:
+      - gui
+    name_template: >-
+      winscp-filezilla-migrator_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    files:
+      - README.md
+      - LICENSE
+
+  - id: cli
+    builds:
+      - cli
+    name_template: >-
+      winscp-filezilla-migrator-cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    files:
+      - README.md
+      - LICENSE
+
+  - id: web
+    builds:
+      - web-server
+    name_template: >-
+      winscp-filezilla-migrator-web_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  name_template: "{{ .Version }}-SNAPSHOT-{{ .ShortCommit }}"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"
+
+release:
+  github:
+    owner: kefyusuf
+    name: winscp-filezilla-migrator
+  draft: true
+  replace_existing_draft: true

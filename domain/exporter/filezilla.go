@@ -4,9 +4,10 @@ import (
 	"encoding/base64"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/beevik/etree"
-	"github.com/muety/winscp2filezilla/domain/models"
+	"github.com/kefyusuf/winscp-filezilla-migrator/domain/models"
 )
 
 type FolderNode struct {
@@ -22,34 +23,15 @@ func ExportToFileZilla(sessions []models.Session, outputPath string) error {
 	rootNode := doc.CreateElement("FileZilla3")
 	serversNode := rootNode.CreateElement("Servers")
 	rootFolder := serversNode.CreateElement("Folder")
-	rootFolder.SetText("Imported")
+	rootFolder.SetText("WinSCP-" + time.Now().Format("2006-01-02_1504"))
 
-	rootLevelServers := []models.Session{}
-	folderMap := buildFolderTree(sessions)
+	rootTree := buildFolderTree(sessions)
 
-	for _, folder := range folderMap {
+	for _, folder := range rootTree.Children {
 		addFolderToXML(rootFolder, folder)
 	}
 
-	for _, session := range sessions {
-		hasFolder := false
-		for _, folder := range folderMap {
-			for _, s := range folder.Servers {
-				if s.Name == session.Name {
-					hasFolder = true
-					break
-				}
-			}
-			if hasFolder {
-				break
-			}
-		}
-		if !hasFolder {
-			rootLevelServers = append(rootLevelServers, session)
-		}
-	}
-
-	for _, server := range rootLevelServers {
+	for _, server := range rootTree.Servers {
 		addServerToXML(rootFolder, server)
 	}
 
@@ -62,30 +44,40 @@ func ExportToFileZilla(sessions []models.Session, outputPath string) error {
 	return nil
 }
 
-func buildFolderTree(sessions []models.Session) []*FolderNode {
-	folderMap := make(map[string]*FolderNode)
+func buildFolderTree(sessions []models.Session) *FolderNode {
+	root := &FolderNode{}
 
 	for _, session := range sessions {
 		parts := strings.Split(session.Name, "\\")
 
 		if len(parts) <= 1 {
+			root.Servers = append(root.Servers, session)
 			continue
 		}
 
-		folderPath := strings.Join(parts[:len(parts)-1], "\\")
-
-		if _, exists := folderMap[folderPath]; !exists {
-			folderMap[folderPath] = &FolderNode{Name: folderPath}
+		// Navigate or create folder hierarchy
+		current := root
+		for i := 0; i < len(parts)-1; i++ {
+			name := parts[i]
+			found := false
+			for _, child := range current.Children {
+				if child.Name == name {
+					current = child
+					found = true
+					break
+				}
+			}
+			if !found {
+				node := &FolderNode{Name: name}
+				current.Children = append(current.Children, node)
+				current = node
+			}
 		}
-		folderMap[folderPath].Servers = append(folderMap[folderPath].Servers, session)
+
+		current.Servers = append(current.Servers, session)
 	}
 
-	result := make([]*FolderNode, 0)
-	for _, f := range folderMap {
-		result = append(result, f)
-	}
-
-	return result
+	return root
 }
 
 func addFolderToXML(parent *etree.Element, folder *FolderNode) {
@@ -116,7 +108,7 @@ func addServerToXML(parent *etree.Element, session models.Session) {
 	serverNode := parent.CreateElement("Server")
 
 	nameNode := serverNode.CreateElement("Name")
-	nameParts := strings.Split(session.Name, "/")
+	nameParts := strings.Split(session.Name, "\\")
 	nameNode.SetText(nameParts[len(nameParts)-1])
 
 	hostNode := serverNode.CreateElement("Host")
@@ -173,6 +165,69 @@ func mapProtocol(fsProtocol string) string {
 		return "1"
 	}
 	return "0"
+}
+
+func ExportToFileZillaRaw(sessions []interface{}, outputPath string) error {
+	doc := etree.NewDocument()
+	doc.CreateProcInst("xml", `version="1.0" encoding="UTF-8"`)
+
+	rootNode := doc.CreateElement("FileZilla3")
+	serversNode := rootNode.CreateElement("Servers")
+	rootFolder := serversNode.CreateElement("Folder")
+	rootFolder.SetText("WinSCP-" + time.Now().Format("2006-01-02_1504"))
+
+	for _, s := range sessions {
+		m := s.(map[string]string)
+		serverNode := rootFolder.CreateElement("Server")
+
+		nameNode := serverNode.CreateElement("Name")
+		nameNode.SetText(m["Name"])
+
+		hostNode := serverNode.CreateElement("Host")
+		hostNode.SetText(m["HostName"])
+
+		protocolNode := serverNode.CreateElement("Protocol")
+		if m["FSProtocol"] == "2" {
+			protocolNode.SetText("1")
+		} else {
+			protocolNode.SetText("0")
+		}
+
+		userNode := serverNode.CreateElement("User")
+		userNode.SetText(m["UserName"])
+
+		passNode := serverNode.CreateElement("Pass")
+		passNode.SetText(base64.StdEncoding.EncodeToString([]byte(m["Password"])))
+		passNode.CreateAttr("encoding", "base64")
+
+		portNode := serverNode.CreateElement("Port")
+		portNode.SetText(m["PortNumber"])
+
+		localDirNode := serverNode.CreateElement("LocalDir")
+		_ = localDirNode
+		remoteDirNode := serverNode.CreateElement("RemoteDir")
+		remoteDirNode.SetText(m["RemoteDir"])
+
+		typeNode := serverNode.CreateElement("Type")
+		typeNode.SetText("0")
+		logonNode := serverNode.CreateElement("Logontype")
+		logonNode.SetText("1")
+		tzNode := serverNode.CreateElement("TimezoneOffset")
+		tzNode.SetText("0")
+		pasvNode := serverNode.CreateElement("PasvMode")
+		pasvNode.SetText("MODE_DEFAULT")
+		maxNode := serverNode.CreateElement("MaximumMultipleConnections")
+		maxNode.SetText("0")
+		encNode := serverNode.CreateElement("EncodingType")
+		encNode.SetText("Auto")
+		bypassNode := serverNode.CreateElement("BypassProxy")
+		bypassNode.SetText("0")
+		syncNode := serverNode.CreateElement("SyncBrowsing")
+		syncNode.SetText("0")
+	}
+
+	doc.Indent(2)
+	return doc.WriteToFile(outputPath)
 }
 
 func mapPort(fsProtocol string, portNumber string) string {
