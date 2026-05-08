@@ -14,22 +14,33 @@ builds:
       - -trimpath
     ldflags:
       - -s -w
-    env:
-      - CGO_ENABLED=0
     goos:
       - windows
-      - linux
       - darwin
     goarch:
       - amd64
       - arm64
-    ignore:
-      - goos: darwin
-        goarch: arm64
+    env:
+      - CGO_ENABLED=0
     overrides:
       - goos: windows
         ldflags:
           - -s -w -H=windowsgui
+
+  - id: gui-linux
+    main: ./
+    binary: winscp-filezilla-migrator
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
 
   - id: cli
     main: ./cmd/cli/
@@ -75,6 +86,7 @@ archives:
   - id: gui
     builds:
       - gui
+      - gui-linux
     name_template: >-
       winscp-filezilla-migrator_{{ .Version }}_{{ .Os }}_{{ .Arch }}
     formats:
